@@ -2,6 +2,10 @@
 
 My [AeroSpace](https://github.com/nikitabobko/AeroSpace) setup, tuned to feel like Amethyst: preset layouts you can cycle through, 10px gaps, and no empty tiles for windows you can't see.
 
+[![Demo: switching layouts and workspaces](demo.gif)](demo.mp4)
+
+*Click for the full-quality video.*
+
 ## Layouts
 
 | Layout | What it looks like |
