@@ -15,7 +15,7 @@ solo_state="${TMPDIR:-/tmp}/aerospace-custom-solo-$ws"
 current=$(cat "$state" 2>/dev/null)
 solo=$(cat "$solo_state" 2>/dev/null)
 
-gap() { sed -nE "s/^gaps\.$1 *= *([0-9]+).*/\1/p" ~/.aerospace.toml; }
+gap() { sed -nE "s/^gaps\.$1 *= *([0-9]+).*/\1/p" ~/.config/aerospace/aerospace.toml; }
 
 # Focused window on the left, everything else stacked on the right
 arrange_custom() {

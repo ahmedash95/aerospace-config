@@ -39,12 +39,13 @@ The letters H, J, K and L aren't workspaces, because those keys are used for foc
 
 ## Files
 
+This repo is meant to be cloned as `~/.config/aerospace`, the folder where AeroSpace looks for its config. Nothing needs to be linked or copied.
+
 ```
-aerospace.toml                 -> ~/.aerospace.toml
-scripts/cycle-layout.sh        -> ~/.config/aerospace/cycle-layout.sh
-scripts/hide-ghost-windows.sh  -> ~/.config/aerospace/hide-ghost-windows.sh
-scripts/workspace-memory.sh    -> ~/.config/aerospace/workspace-memory.sh
-install.sh                     links the files above into place
+aerospace.toml                 AeroSpace config
+scripts/cycle-layout.sh        layout switching
+scripts/hide-ghost-windows.sh  keeps invisible windows from taking tiles
+scripts/workspace-memory.sh    restores windows to their workspaces after a restart
 ```
 
 - **`cycle-layout.sh`** switches between the layouts. It remembers the current layout for each workspace, so cycling picks up where you left off. The `layouts=(...)` line at the top sets which layouts are in the cycle and in what order. `main_ratio` sets the Custom split, and the script takes gap sizes from `aerospace.toml` into account.
@@ -62,17 +63,16 @@ install.sh                     links the files above into place
    brew install FelixKratz/formulae/borders
    ```
 3. Open AeroSpace once and grant it Accessibility access (System Settings → Privacy & Security → Accessibility).
-4. Clone this repo and run the installer:
+4. Clone this repo into AeroSpace's config folder:
    ```sh
-   git clone git@github.com:ahmedash95/aerospace-config.git ~/Code/aerospace-config
-   ~/Code/aerospace-config/install.sh
+   git clone git@github.com:ahmedash95/aerospace-config.git ~/.config/aerospace
    ```
-   The installer symlinks the files into place, so editing the repo changes your live config. Any existing files it replaces are kept as `*.bak-<timestamp>`.
+   If you already have a `~/.aerospace.toml`, rename or delete it. AeroSpace won't start when there's a config file in both places. If `~/.config/aerospace` already exists, move it out of the way before cloning.
 5. **Optional:** set `start-at-login = true` in `aerospace.toml` so AeroSpace starts at login.
 
 If macOS asks whether `osascript` may control your computer, allow it. The scripts use it to check which windows are on screen and how wide the screen is.
 
-After you edit `aerospace.toml`, run `aerospace reload-config` or press `opt+shift+;` then `esc`.
+Editing the repo changes your live config. After you edit `aerospace.toml`, run `aerospace reload-config` or press `opt+shift+;` then `esc`.
 
 ## Tips
 

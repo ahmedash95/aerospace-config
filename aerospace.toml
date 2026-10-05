@@ -1,5 +1,4 @@
-# Place a copy of this config to ~/.aerospace.toml
-# After that, you can edit ~/.aerospace.toml to your liking
+# Lives at ~/.config/aerospace/aerospace.toml (this repo is cloned to ~/.config/aerospace)
 
 # Config version for compatibility and deprecations
 # See: https://nikitabobko.github.io/AeroSpace/guide#config-version
@@ -12,9 +11,9 @@ after-startup-command = [
   # Colored border around the focused window (JankyBorders: brew install FelixKratz/formulae/borders)
   'exec-and-forget /opt/homebrew/bin/borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0',
   # Put windows back on the workspaces they were on before the restart
-  'exec-and-forget ~/.config/aerospace/workspace-memory.sh restore',
+  'exec-and-forget ~/.config/aerospace/scripts/workspace-memory.sh restore',
   # Backstop: re-snapshot every few seconds for moves that don't trigger a callback
-  'exec-and-forget ~/.config/aerospace/workspace-memory.sh watch'
+  'exec-and-forget ~/.config/aerospace/scripts/workspace-memory.sh watch'
 ]
 
 # Start AeroSpace at login
@@ -68,11 +67,11 @@ on-mode-changed = []
 
 # Stop invisible windows (background tabs, minimized, other Spaces) from taking up tiles
 on-focus-changed = [
-  'exec-and-forget ~/.config/aerospace/hide-ghost-windows.sh',
+  'exec-and-forget ~/.config/aerospace/scripts/hide-ghost-windows.sh',
   # Remember window -> workspace placement so it survives restarts
-  'exec-and-forget ~/.config/aerospace/workspace-memory.sh save'
+  'exec-and-forget ~/.config/aerospace/scripts/workspace-memory.sh save'
 ]
-exec-on-workspace-change = ['/bin/bash', '-c', '~/.config/aerospace/hide-ghost-windows.sh; ~/.config/aerospace/workspace-memory.sh save']
+exec-on-workspace-change = ['/bin/bash', '-c', '~/.config/aerospace/scripts/hide-ghost-windows.sh; ~/.config/aerospace/scripts/workspace-memory.sh save']
 
 focus-follows-mouse.enabled = false
 
@@ -128,16 +127,16 @@ gaps.outer.right =      10
     alt-slash = 'layout tiles horizontal vertical'
     alt-comma = 'layout accordion horizontal vertical'
 
-    # Cycle through layouts (list is in ~/.config/aerospace/cycle-layout.sh)
-    alt-ctrl-left = 'exec-and-forget ~/.config/aerospace/cycle-layout.sh'
+    # Cycle through layouts (list is in ~/.config/aerospace/scripts/cycle-layout.sh)
+    alt-ctrl-left = 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh'
     # Move the focused window to the next position in the workspace (wraps around)
     cmd-alt-ctrl-left = 'swap dfs-next --wrap-around'
 
     # Jump straight to a layout
-    alt-ctrl-f = 'exec-and-forget ~/.config/aerospace/cycle-layout.sh fullscreen'
-    alt-ctrl-c = 'exec-and-forget ~/.config/aerospace/cycle-layout.sh column'
-    alt-ctrl-r = 'exec-and-forget ~/.config/aerospace/cycle-layout.sh rows'     # stacked top to bottom
-    alt-ctrl-m = 'exec-and-forget ~/.config/aerospace/cycle-layout.sh custom'   # 60/40
+    alt-ctrl-f = 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh fullscreen'
+    alt-ctrl-c = 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh column'
+    alt-ctrl-r = 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh rows'     # stacked top to bottom
+    alt-ctrl-m = 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh custom'   # 60/40
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#focus
     alt-h = 'focus left'
