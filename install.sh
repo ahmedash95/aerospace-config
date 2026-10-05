@@ -21,6 +21,7 @@ chmod +x "$repo"/scripts/*.sh
 link "$repo/aerospace.toml"                 ~/.aerospace.toml
 link "$repo/scripts/cycle-layout.sh"        ~/.config/aerospace/cycle-layout.sh
 link "$repo/scripts/hide-ghost-windows.sh"  ~/.config/aerospace/hide-ghost-windows.sh
+link "$repo/scripts/workspace-memory.sh"    ~/.config/aerospace/workspace-memory.sh
 
 if command -v aerospace >/dev/null && aerospace reload-config 2>/dev/null; then
   echo "AeroSpace config reloaded"

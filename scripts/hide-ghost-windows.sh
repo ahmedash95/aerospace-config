@@ -39,4 +39,7 @@ while read -r id layout; do
 done < <(aerospace list-windows --workspace visible --format '%{window-id} %{window-layout}')
 
 printf '%s' "$ghosts" > "$state"
+
+# Keep the custom layout's empty space when only one window is left
+~/.config/aerospace/cycle-layout.sh sync
 done

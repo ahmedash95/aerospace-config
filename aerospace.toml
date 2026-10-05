@@ -8,7 +8,14 @@ config-version = 2
 
 # You can use it to add commands that run after AeroSpace startup.
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
-after-startup-command = []
+after-startup-command = [
+  # Colored border around the focused window (JankyBorders: brew install FelixKratz/formulae/borders)
+  'exec-and-forget /opt/homebrew/bin/borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0',
+  # Put windows back on the workspaces they were on before the restart
+  'exec-and-forget ~/.config/aerospace/workspace-memory.sh restore',
+  # Backstop: re-snapshot every few seconds for moves that don't trigger a callback
+  'exec-and-forget ~/.config/aerospace/workspace-memory.sh watch'
+]
 
 # Start AeroSpace at login
 start-at-login = false
@@ -24,7 +31,7 @@ enable-normalization-opposite-orientation-for-nested-containers = true
 # See: https://nikitabobko.github.io/AeroSpace/guide#layouts
 # The 'accordion-padding' specifies the size of accordion padding
 # You can set 0 to disable the padding feature
-accordion-padding = 30
+accordion-padding = 0
 
 # Possible values: tiles|accordion
 default-root-container-layout = 'tiles'
@@ -60,8 +67,12 @@ persistent-workspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B",
 on-mode-changed = []
 
 # Stop invisible windows (background tabs, minimized, other Spaces) from taking up tiles
-on-focus-changed = ['exec-and-forget ~/.config/aerospace/hide-ghost-windows.sh']
-exec-on-workspace-change = ['/bin/bash', '-c', '~/.config/aerospace/hide-ghost-windows.sh']
+on-focus-changed = [
+  'exec-and-forget ~/.config/aerospace/hide-ghost-windows.sh',
+  # Remember window -> workspace placement so it survives restarts
+  'exec-and-forget ~/.config/aerospace/workspace-memory.sh save'
+]
+exec-on-workspace-change = ['/bin/bash', '-c', '~/.config/aerospace/hide-ghost-windows.sh; ~/.config/aerospace/workspace-memory.sh save']
 
 focus-follows-mouse.enabled = false
 
@@ -125,6 +136,7 @@ gaps.outer.right =      10
     # Jump straight to a layout
     alt-ctrl-f = 'exec-and-forget ~/.config/aerospace/cycle-layout.sh fullscreen'
     alt-ctrl-c = 'exec-and-forget ~/.config/aerospace/cycle-layout.sh column'
+    alt-ctrl-r = 'exec-and-forget ~/.config/aerospace/cycle-layout.sh rows'     # stacked top to bottom
     alt-ctrl-m = 'exec-and-forget ~/.config/aerospace/cycle-layout.sh custom'   # 60/40
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#focus

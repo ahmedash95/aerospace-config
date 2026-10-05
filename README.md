@@ -1,6 +1,6 @@
 # aerospace-config
 
-My [AeroSpace](https://github.com/nikitabobko/AeroSpace) setup, tuned to feel like Amethyst: preset layouts you can cycle through, 10px gaps, and no empty tiles for windows you can't see.
+My [AeroSpace](https://github.com/nikitabobko/AeroSpace) setup, tuned to feel like Amethyst: preset layouts you can cycle through, 10px gaps, no empty tiles for windows you can't see, and windows that stay on their workspaces when AeroSpace restarts.
 
 [![Demo: switching layouts and workspaces](demo.gif)](demo.mp4)
 
@@ -12,7 +12,8 @@ My [AeroSpace](https://github.com/nikitabobko/AeroSpace) setup, tuned to feel li
 |---|---|
 | **Fullscreen** | Every window fills the screen; switch between them with `alt-h` / `alt-l` |
 | **Column** | All windows side by side at equal widths |
-| **Custom (60/40)** | Focused window takes the left 60%, the rest stack on the right 40% |
+| **Rows** | All windows stacked top to bottom at equal heights |
+| **Custom (60/40)** | Focused window takes the left 60%, the rest stack on the right 40%. A window that's alone on the workspace keeps the 60% size and the right side stays empty |
 
 Layouts are applied on demand. A window opened later won't slot into the layout on its own, so press the shortcut again to re-apply it.
 
@@ -22,9 +23,10 @@ Layouts are applied on demand. A window opened later won't slot into the layout 
 
 | Keys | Action |
 |---|---|
-| `opt+ctrl+←` | Cycle to the next layout (Fullscreen → Column → Custom) |
+| `opt+ctrl+←` | Cycle to the next layout (Fullscreen → Column → Rows → Custom) |
 | `opt+ctrl+f` | Fullscreen |
 | `opt+ctrl+c` | Column |
+| `opt+ctrl+r` | Rows |
 | `opt+ctrl+m` | Custom 60/40 (the focused window becomes the big one) |
 | `cmd+opt+ctrl+←` | Move the focused window to the next position (wraps around) |
 | `opt+1…9`, `opt+a…z` | Switch to that workspace |
@@ -41,11 +43,13 @@ The letters H, J, K and L aren't workspaces, because those keys are used for foc
 aerospace.toml                 -> ~/.aerospace.toml
 scripts/cycle-layout.sh        -> ~/.config/aerospace/cycle-layout.sh
 scripts/hide-ghost-windows.sh  -> ~/.config/aerospace/hide-ghost-windows.sh
+scripts/workspace-memory.sh    -> ~/.config/aerospace/workspace-memory.sh
 install.sh                     links the files above into place
 ```
 
 - **`cycle-layout.sh`** switches between the layouts. It remembers the current layout for each workspace, so cycling picks up where you left off. The `layouts=(...)` line at the top sets which layouts are in the cycle and in what order. `main_ratio` sets the Custom split, and the script takes gap sizes from `aerospace.toml` into account.
 - **`hide-ghost-windows.sh`** runs on every focus and workspace change. AeroSpace still gives a tile to windows macOS isn't drawing: inactive native tabs, minimized windows and windows on another macOS Space. That leaves empty space in the layout. The script floats those windows so they stop taking space, and tiles them again once they're visible.
+- **`workspace-memory.sh`** puts windows back on their workspaces after AeroSpace restarts. Normally AeroSpace only tracks this while it's running, so a restart piles every window onto one workspace. The script saves which workspace each window is on whenever focus or the workspace changes, and every 3 seconds as a backup, because moving a window that isn't focused doesn't trigger any callback. On startup it moves each window back, matching by window ID, then by app and window title, then by the app's last workspace. The last match also places apps after a reboot or relaunch, when window IDs change. State is kept in `~/.local/state/aerospace/`, and `restore.log` there lists what each restore moved. Only which workspace a window is on is restored. AeroSpace has no command to save or load the layout tree, so window order and sizes within a workspace aren't restored.
 
 ## Setting up a new Mac
 
@@ -53,14 +57,18 @@ install.sh                     links the files above into place
    ```sh
    brew install --cask nikitabobko/tap/aerospace
    ```
-2. Open AeroSpace once and grant it Accessibility access (System Settings → Privacy & Security → Accessibility).
-3. Clone this repo and run the installer:
+2. **Optional:** install [JankyBorders](https://github.com/FelixKratz/JankyBorders) for the border around the focused window (started from `after-startup-command`):
+   ```sh
+   brew install FelixKratz/formulae/borders
+   ```
+3. Open AeroSpace once and grant it Accessibility access (System Settings → Privacy & Security → Accessibility).
+4. Clone this repo and run the installer:
    ```sh
    git clone git@github.com:ahmedash95/aerospace-config.git ~/Code/aerospace-config
    ~/Code/aerospace-config/install.sh
    ```
    The installer symlinks the files into place, so editing the repo changes your live config. Any existing files it replaces are kept as `*.bak-<timestamp>`.
-4. **Optional:** set `start-at-login = true` in `aerospace.toml` so AeroSpace starts at login.
+5. **Optional:** set `start-at-login = true` in `aerospace.toml` so AeroSpace starts at login.
 
 If macOS asks whether `osascript` may control your computer, allow it. The scripts use it to check which windows are on screen and how wide the screen is.
 
