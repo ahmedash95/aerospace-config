@@ -9,7 +9,7 @@ config-version = 2
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = [
   # Colored border around the focused window (JankyBorders: brew install FelixKratz/formulae/borders)
-  'exec-and-forget /opt/homebrew/bin/borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0',
+  'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0',
   # Put windows back on the workspaces they were on before the restart
   'exec-and-forget ~/.config/aerospace/scripts/workspace-memory.sh restore',
   # Backstop: re-snapshot every few seconds for moves that don't trigger a callback

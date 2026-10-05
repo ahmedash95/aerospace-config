@@ -43,6 +43,7 @@ This repo is meant to be cloned as `~/.config/aerospace`, the folder where AeroS
 
 ```
 aerospace.toml                 AeroSpace config
+install.sh                     installer / updater (see below)
 scripts/cycle-layout.sh        layout switching
 scripts/hide-ghost-windows.sh  keeps invisible windows from taking tiles
 scripts/workspace-memory.sh    restores windows to their workspaces after a restart
@@ -54,21 +55,30 @@ scripts/workspace-memory.sh    restores windows to their workspaces after a rest
 
 ## Setting up a new Mac
 
-1. Install AeroSpace:
-   ```sh
-   brew install --cask nikitabobko/tap/aerospace
-   ```
-2. **Optional:** install [JankyBorders](https://github.com/FelixKratz/JankyBorders) for the border around the focused window (started from `after-startup-command`):
-   ```sh
-   brew install FelixKratz/formulae/borders
-   ```
-3. Open AeroSpace once and grant it Accessibility access (System Settings → Privacy & Security → Accessibility).
-4. Clone this repo into AeroSpace's config folder:
-   ```sh
-   git clone git@github.com:ahmedash95/aerospace-config.git ~/.config/aerospace
-   ```
-   If you already have a `~/.aerospace.toml`, rename or delete it. AeroSpace won't start when there's a config file in both places. If `~/.config/aerospace` already exists, move it out of the way before cloning.
-5. **Optional:** set `start-at-login = true` in `aerospace.toml` so AeroSpace starts at login.
+```sh
+curl -fsSL https://raw.githubusercontent.com/ahmedash95/aerospace-config/main/install.sh | bash
+```
+
+The installer:
+- Installs AeroSpace and [JankyBorders](https://github.com/FelixKratz/JankyBorders) (the border around the focused window) with Homebrew if they're missing. Set `NO_BREW=1` to skip this.
+- Clones this repo to `~/.config/aerospace`, the folder where AeroSpace looks for its config. If the repo is already there, it pulls the latest version instead, so the same command also updates.
+- Renames anything it would replace, such as an existing `~/.config/aerospace` or `~/.aerospace.toml`, to `*.bak-<timestamp>`. AeroSpace won't start when a config file exists in both places.
+- Reloads AeroSpace's config if it's running, or starts it.
+
+The first time AeroSpace starts, grant it Accessibility access (System Settings → Privacy & Security → Accessibility). To have it start at login, set `start-at-login = true` in `aerospace.toml`.
+
+<details>
+<summary>Manual install</summary>
+
+```sh
+brew install --cask nikitabobko/tap/aerospace
+brew install FelixKratz/formulae/borders   # optional
+mv ~/.aerospace.toml ~/.aerospace.toml.bak 2>/dev/null
+git clone https://github.com/ahmedash95/aerospace-config.git ~/.config/aerospace
+open -a AeroSpace
+```
+
+</details>
 
 If macOS asks whether `osascript` may control your computer, allow it. The scripts use it to check which windows are on screen and how wide the screen is.
 
