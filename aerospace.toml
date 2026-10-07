@@ -10,9 +10,10 @@ config-version = 2
 after-startup-command = [
   # Colored border around the focused window (JankyBorders: brew install FelixKratz/formulae/borders)
   'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0',
-  # Put windows back on the workspaces they were on before the restart
+  # Put windows back on their workspaces, workspaces back on their monitors, and re-apply layouts
   'exec-and-forget ~/.config/aerospace/scripts/workspace-memory.sh restore',
-  # Backstop: re-snapshot every few seconds for moves that don't trigger a callback
+  # Re-snapshot every few seconds for moves that don't trigger a callback, and switch to the
+  # remembered arrangement when monitors are plugged in or out
   'exec-and-forget ~/.config/aerospace/scripts/workspace-memory.sh watch'
 ]
 
@@ -124,8 +125,9 @@ gaps.outer.right =      10
     # 'tell application "Terminal" to tell (do script) to activate' '''
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#layout
-    alt-slash = 'layout tiles horizontal vertical'
-    alt-comma = 'layout accordion horizontal vertical'
+    # Arranging a workspace by hand stops the scripts from re-applying its remembered layout
+    alt-slash = ['layout tiles horizontal vertical', 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh forget']
+    alt-comma = ['layout accordion horizontal vertical', 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh forget']
 
     # Cycle through layouts (list is in ~/.config/aerospace/scripts/cycle-layout.sh)
     alt-ctrl-left = 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh'
@@ -232,14 +234,22 @@ gaps.outer.right =      10
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 [mode.service.binding]
     esc = ['reload-config', 'mode main']
-    r = ['flatten-workspace-tree', 'mode main'] # reset layout
+    r = ['flatten-workspace-tree', 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh forget', 'mode main'] # reset layout
     f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
     backspace = ['close-all-windows-but-current', 'mode main']
 
     # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
     #s = ['layout sticky tiling', 'mode main']
 
-    alt-shift-h = ['join-with left', 'mode main']
-    alt-shift-j = ['join-with down', 'mode main']
-    alt-shift-k = ['join-with up', 'mode main']
-    alt-shift-l = ['join-with right', 'mode main']
+    alt-shift-h = ['join-with left', 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh forget', 'mode main']
+    alt-shift-j = ['join-with down', 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh forget', 'mode main']
+    alt-shift-k = ['join-with up', 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh forget', 'mode main']
+    alt-shift-l = ['join-with right', 'exec-and-forget ~/.config/aerospace/scripts/cycle-layout.sh forget', 'mode main']
+
+# New windows join their app's usual workspace and slot into that workspace's layout.
+# Rules for specific apps go above this one, and win over it unless they set check-further-callbacks.
+# Windows already open when AeroSpace starts are handled by 'workspace-memory.sh restore' instead.
+[[on-window-detected]]
+  if.during-aerospace-startup = false
+  check-further-callbacks = true
+  run = 'exec-and-forget ~/.config/aerospace/scripts/workspace-memory.sh place'

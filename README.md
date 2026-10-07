@@ -1,6 +1,6 @@
 # aerospace-config
 
-My [AeroSpace](https://github.com/nikitabobko/AeroSpace) setup, tuned to feel like Amethyst: preset layouts you can cycle through, 10px gaps, no empty tiles for windows you can't see, and windows that stay on their workspaces when AeroSpace restarts.
+My [AeroSpace](https://github.com/nikitabobko/AeroSpace) setup, tuned to feel like Amethyst: preset layouts you can cycle through, 10px gaps, no empty tiles for windows you can't see, and a layout that remembers itself: windows stay on their workspaces when AeroSpace restarts, new windows join their app's usual workspace, and each monitor setup (office, home desk, laptop only) keeps its own arrangement.
 
 [![Demo: switching layouts and workspaces](demo.gif)](demo.mp4)
 
@@ -15,7 +15,9 @@ My [AeroSpace](https://github.com/nikitabobko/AeroSpace) setup, tuned to feel li
 | **Rows** | All windows stacked top to bottom at equal heights |
 | **Custom (60/40)** | Focused window takes the left 60%, the rest stack on the right 40%. A window that's alone on the workspace keeps the 60% size and the right side stays empty |
 
-Layouts are applied on demand. A window opened later won't slot into the layout on its own, so press the shortcut again to re-apply it.
+The layout you pick is remembered for that workspace, separately for each monitor setup. It's re-applied when a new window opens there, after AeroSpace restarts and when you plug monitors in or out. A setup where you never picked a layout for a workspace uses the last one you picked anywhere.
+
+Arranging a workspace by hand (`opt+/`, `opt+,`, and `r` or `opt+shift+h/j/k/l` in service mode) stops the remembered layout from being re-applied there, until you pick a layout again.
 
 ## Shortcuts
 
@@ -44,14 +46,20 @@ This repo is meant to be cloned as `~/.config/aerospace`, the folder where AeroS
 ```
 aerospace.toml                 AeroSpace config
 install.sh                     installer / updater (see below)
-scripts/cycle-layout.sh        layout switching
+scripts/cycle-layout.sh        layout switching, remembered per workspace and monitor setup
 scripts/hide-ghost-windows.sh  keeps invisible windows from taking tiles
-scripts/workspace-memory.sh    restores windows to their workspaces after a restart
+scripts/workspace-memory.sh    puts windows, workspaces and layouts back after restarts and monitor changes
+scripts/state.sh               shared helpers: where state lives, which monitor setup is connected
 ```
 
-- **`cycle-layout.sh`** switches between the layouts. It remembers the current layout for each workspace, so cycling picks up where you left off. The `layouts=(...)` line at the top sets which layouts are in the cycle and in what order. `main_ratio` sets the Custom split, and the script takes gap sizes from `aerospace.toml` into account.
+- **`cycle-layout.sh`** switches between the layouts. It remembers each workspace's layout per monitor setup, so cycling picks up where you left off and the layout comes back after restarts and monitor changes. For Custom it also remembers which window is the big one. The `layouts=(...)` line at the top sets which layouts are in the cycle and in what order. `main_ratio` sets the Custom split, and the script takes gap sizes from `aerospace.toml` into account.
 - **`hide-ghost-windows.sh`** runs on every focus and workspace change. AeroSpace still gives a tile to windows macOS isn't drawing: inactive native tabs, minimized windows and windows on another macOS Space. That leaves empty space in the layout. The script floats those windows so they stop taking space, and tiles them again once they're visible.
-- **`workspace-memory.sh`** puts windows back on their workspaces after AeroSpace restarts. Normally AeroSpace only tracks this while it's running, so a restart piles every window onto one workspace. The script saves which workspace each window is on whenever focus or the workspace changes, and every 3 seconds as a backup, because moving a window that isn't focused doesn't trigger any callback. On startup it moves each window back, matching by window ID, then by app and window title, then by the app's last workspace. The last match also places apps after a reboot or relaunch, when window IDs change. State is kept in `~/.local/state/aerospace/`, and `restore.log` there lists what each restore moved. Only which workspace a window is on is restored. AeroSpace has no command to save or load the layout tree, so window order and sizes within a workspace aren't restored.
+- **`workspace-memory.sh`** keeps track of where things belong and puts them back. Normally AeroSpace only tracks this while it's running, so a restart piles every window onto one workspace.
+  - **Restarts and crashes.** The script saves which workspace each window is on whenever focus or the workspace changes, and every 3 seconds as a backup, because moving a window that isn't focused doesn't trigger any callback. On startup it moves each window back, matching by window ID, then by app and window title, then by the app's last workspace. The last match also places apps after a reboot or relaunch, when window IDs change. Then it puts workspaces back on their monitors and re-applies their layouts.
+  - **Monitor setups.** The set of connected monitors (by name) identifies a setup, such as office, home desk or laptop only. For each setup the script remembers which monitor every workspace is on and which ones are showing. When monitors are plugged in or out, it puts that setup's arrangement back within about 2 seconds. A setup it hasn't seen before keeps AeroSpace's arrangement and is remembered from then on. Two monitors of the same model are told apart by their left-to-right order.
+  - **New windows.** A new window joins its app's other windows when they're all on one workspace, or goes where the app was last seen when it's the app's first window. It stays where it opened when the app already has a window on that workspace, when the app is spread over several workspaces, and for dialogs and other floating windows. If you're using the app, you follow the window to its workspace. List apps that should always open where you are in `roaming_apps` at the top of the script. Rules you add to `aerospace.toml` for specific apps take precedence.
+  - **Limits.** Window order within a workspace isn't restored, because AeroSpace has no command to read or rebuild the layout tree. The new window briefly appears on the current workspace before it moves. Several windows of one app whose titles changed (browser windows, after a relaunch) all go to the app's last workspace.
+  - State is kept in `~/.local/state/aerospace/`, with one folder per setup under `setups/`. `restore.log` there lists what each restore, setup change and new window moved.
 
 ## Setting up a new Mac
 
