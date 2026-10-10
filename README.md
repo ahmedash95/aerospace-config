@@ -32,12 +32,12 @@ Arranging a workspace by hand (`opt+/`, `opt+,`, and `r` or `opt+shift+h/j/k/l` 
 | `opt+ctrl+m` | Custom 60/40 (the focused window becomes the big one) |
 | `cmd+opt+ctrl+←` | Move the focused window to the next position (wraps around) |
 | `opt+1…9`, `opt+a…z` | Switch to that workspace |
+| `opt+ctrl+l` / `opt+ctrl+h` | Next / previous workspace on this screen (1 → 2 … on the main one, A → B … on the other), wraps around |
 | `opt+shift+1…9`, `opt+shift+a…z` | Send the focused window to that workspace |
 | `opt+h/j/k/l` | Focus left / down / up / right |
-| `opt+shift+h/j/k/l` | Move the window left / down / up / right |
 | `opt+shift+;` | Service mode (`esc` there reloads the config) |
 
-The letters H, J, K and L aren't workspaces, because those keys are used for focus and movement. Everything not listed above uses AeroSpace's defaults.
+Workspaces 1–10 live on the main monitor (the one set as main display in System Settings) and A–Z on the other one, whether that's laptop + external or two externals with the lid closed. With only the laptop screen, everything is on it. The letters H, J, K and L aren't workspaces, because those keys are used for focus and movement. `opt+shift+h/j/k/l` is left unbound in normal mode so apps like cmux, tmux or vim can use it for switching panes (in service mode it still joins windows). Everything not listed above uses AeroSpace's defaults.
 
 ## Files
 
