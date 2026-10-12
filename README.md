@@ -68,7 +68,7 @@ curl -fsSL https://raw.githubusercontent.com/ahmedash95/aerospace-config/main/in
 ```
 
 The installer:
-- Installs AeroSpace and [JankyBorders](https://github.com/FelixKratz/JankyBorders) (the border around the focused window) with Homebrew if they're missing. Set `NO_BREW=1` to skip this.
+- Installs AeroSpace with Homebrew if it's missing. Set `NO_BREW=1` to skip this.
 - Clones this repo to `~/.config/aerospace`, the folder where AeroSpace looks for its config. If the repo is already there, it pulls the latest version instead, so the same command also updates.
 - Renames anything it would replace, such as an existing `~/.config/aerospace` or `~/.aerospace.toml`, to `*.bak-<timestamp>`. AeroSpace won't start when a config file exists in both places.
 - Reloads AeroSpace's config if it's running, or starts it.
@@ -80,7 +80,6 @@ The first time AeroSpace starts, grant it Accessibility access (System Settings 
 
 ```sh
 brew install --cask nikitabobko/tap/aerospace
-brew install FelixKratz/formulae/borders   # optional
 mv ~/.aerospace.toml ~/.aerospace.toml.bak 2>/dev/null
 git clone https://github.com/ahmedash95/aerospace-config.git ~/.config/aerospace
 open -a AeroSpace

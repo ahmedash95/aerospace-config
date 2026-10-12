@@ -8,8 +8,6 @@ config-version = 2
 # You can use it to add commands that run after AeroSpace startup.
 # Available commands : https://nikitabobko.github.io/AeroSpace/commands
 after-startup-command = [
-  # Colored border around the focused window (JankyBorders: brew install FelixKratz/formulae/borders)
-  'exec-and-forget borders active_color=0xffe1e3e4 inactive_color=0xff494d64 width=5.0',
   # Put windows back on their workspaces, workspaces back on their monitors, and re-apply layouts
   'exec-and-forget ~/.config/aerospace/scripts/workspace-memory.sh restore',
   # Re-snapshot every few seconds for moves that don't trigger a callback, and switch to the

@@ -3,7 +3,7 @@
 #
 #   curl -fsSL https://raw.githubusercontent.com/ahmedash95/aerospace-config/main/install.sh | bash
 #
-# - Installs AeroSpace and JankyBorders with Homebrew if they're missing (skip with NO_BREW=1)
+# - Installs AeroSpace with Homebrew if it's missing (skip with NO_BREW=1)
 # - Clones the repo to ~/.config/aerospace, or pulls if it's already there
 # - Anything it would replace is kept as *.bak-<timestamp>
 set -euo pipefail
@@ -36,10 +36,6 @@ install_deps() {
   if [ ! -d /Applications/AeroSpace.app ] && ! command -v aerospace >/dev/null; then
     say "Installing AeroSpace"
     brew install --cask nikitabobko/tap/aerospace
-  fi
-  if ! command -v borders >/dev/null; then
-    say "Installing JankyBorders (focused window border)"
-    brew install FelixKratz/formulae/borders
   fi
 }
 
